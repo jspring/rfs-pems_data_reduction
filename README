@@ -1,0 +1,49 @@
+The two scripts "recipe_for_getting_and_reducing_30_sec_data.sh" and 
+"select_station_data_files.sh" are to be used together for reducing 
+PeMS 30 second raw data to a set of files containing timestamp, flow, occupancy,
+and speed data.
+
+Each data file is named with the station number and date in the convention 
+IIIIIII_MM_DD_YYYY.txt, where IIIIIII = station ID, MM=month, SS=day, and 
+YYYY=year.
+The format of each line in the data file is:
+Timestamp Lane1_flow Lane1_occ Lane1_speed Lane2_flow Lane2_occ Lane2_speed Lane3_flow Lane3_occ Lane3_speed Lane4_flow Lane4_occ Lane4_speed Lane5_flow Lane5_occ Lane5_speed Lane6_flow Lane6_occ Lane6_speed Lane7_flow Lane7_occ Lane7_speed Lane8_flow Lane8_occ Lane8_speed
+
+Each metadata file is named with the convention IIIIIII_info.txt. Its format,
+on separate lines, is:
+
+Station number
+Freeway
+Direction
+CA Postmile
+Absolute Postmile
+Latitude
+Longitude
+Length
+Lane type 
+Number of lanes
+Name of street/intersection
+Format of data files (see above)
+
+Raw 30 second PeMS data, containing all of the station data within a Caltrans
+district, is archived daily in a single tarball, and it is huge.
+So these scripts were written to allow us to pick a freeway, direction, and
+start and stop absolute postmiles to reduce the set of files produced to 
+something more manageable.
+
+"recipe_for_getting_and_reducing_30_sec_data.sh" is run first.  Its arguments
+are "metadata file", "data file", "freeway", "direction", 
+"start absolute postmile", and "stop_absolute_postmile".  This script produces
+separate data and metadata files for ALL stations in a Caltrans district, from
+the original tarfile.  This was done because the processing time for filtering
+the copy process by freeway, direction, etc. would be inordinately long.  So
+all stations have separate data and metadata files.
+
+"select_station_data_files.sh" is run on the resultant directory of data files.
+This script uses the metadata file produced by 
+"recipe_for_getting_and_reducing_30_sec_data.sh" to save only the data files
+needed by the selections given to it.
+
+Everything is saved to a data directory, named with the convention 
+ddd_MM_DD_YYYY, where ddd=Caltrans district, MM=month, DD=day, and YYYY=year.
+An example would be "d10_05_12_2014".
